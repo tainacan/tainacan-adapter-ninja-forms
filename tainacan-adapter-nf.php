@@ -88,12 +88,12 @@ class Plugin {
 		?> 
 			<form method="post" action="?page=tainacan-ninja-forms&form_id=<?php echo $form_id; ?>">
 				<?php	$tainacanAdapterNF->display(); ?>
-				<input type="submit" value="Salvar">
+				<input class="button button-primary" type="submit" value="Salvar">
 			</form>
 
 			<form method="post" action="?page=tainacan-ninja-forms&form_id=<?php echo $form_id; ?>">
 				<?php	$tainacanAdapterNF->display_config_collection(); ?>
-				<input type="submit" value="Salvar">
+				<input class="button button-primary" type="submit" value="Salvar">
 			</form>			
 		<?php
 	}
@@ -124,7 +124,7 @@ class Plugin {
 						</option>
 				<?php endforeach; ?>
 		</select>
-		<input type="submit" value="Filtrar">
+		<input class="button button-primary" type="submit" value="Filtrar">
 		<?php
 	}
 
@@ -270,6 +270,7 @@ class Sub_List_Table extends \WP_List_Table
 				?>
 					<button 
 						type='button'
+						class='button button-small'
 						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", true], this, 
 							function(data, e) {
 								if (data.sucess) {
@@ -287,7 +288,8 @@ class Sub_List_Table extends \WP_List_Table
 				ob_start();
 				?>
 					<button 
-						type='button' 
+						type='button'
+						class='button button-small' 
 						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", false], this,
 							function(data, e) {
 								if (data.sucess) {
@@ -350,8 +352,7 @@ class Sub_List_Table extends \WP_List_Table
 }
 
 class Tainacan_Adapter_NF {
-
-	private $TNC_collection_id = 955;
+	private $TNC_collection_id = NULL;
 	private $NF_columns = [];
 
 	function __construct($NF_columns=[]) {
