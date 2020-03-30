@@ -350,8 +350,8 @@ class Sub_List_Table extends \WP_List_Table
 }
 
 class Tainacan_Adapter_NF {
-
-	private $TNC_collection_id = 955;
+	
+	private $TNC_collection_id = NULL;
 	private $NF_columns = [];
 
 	function __construct($NF_columns=[]) {
@@ -361,6 +361,7 @@ class Tainacan_Adapter_NF {
 	public function NF_2_TNC($id_sub, $form_id, $publish) {
 		$sub = Ninja_Forms()->form( $form_id )->get_sub($id_sub);
 		$mapper = get_option("tainacan_adapter_NF_mapper", []);
+		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection", NULL);
 		$errors = [];
 
 		$collections_repository = \Tainacan\Repositories\Collections::get_instance();
@@ -427,6 +428,8 @@ class Tainacan_Adapter_NF {
 		}
 		$mapper = get_option("tainacan_adapter_NF_mapper", []);
 		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection", $this->TNC_collection_id);
+		if( $this->TNC_collection_id == NULL )
+			return;
 		$metadatum_repository = \Tainacan\Repositories\Metadata::get_instance();
 		$collection = new \Tainacan\Entities\Collection( $this->TNC_collection_id );
 		$metadataList = $metadatum_repository->fetch_by_collection( $collection, [] );
