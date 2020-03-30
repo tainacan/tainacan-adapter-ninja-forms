@@ -1,0 +1,1 @@
+# tainacan-adapter-ninja-forms
