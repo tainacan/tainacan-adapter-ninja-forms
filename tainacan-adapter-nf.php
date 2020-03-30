@@ -46,7 +46,14 @@ class Plugin {
 	}
 	
 	function add_theme_menu_item() {
-		add_submenu_page('tainacan_admin', "Tainacan NF", "Tainacan NF", 'manage_options', 'tainacan-ninja-forms', [$this, "display"]);
+		add_submenu_page(
+			'tainacan_admin',
+			"Ninja Forms Adapter",
+			"Ninja Forms Adapter",
+			'manage_options',
+			'tainacan-ninja-forms',
+			[$this, "display"]
+		);
 		$this->get_static_files();
 	}
 	
@@ -59,7 +66,7 @@ class Plugin {
 	{
 		?>
 		<div class="wrap">
-			<h1>Tainacan Ninja Forms</h1>
+			<h1>Tainacan Adapter for Ninja Forms</h1>
 			<form method="get">
 				<input name="page" value="tainacan-ninja-forms" type="hidden"/>
 				<?php	$this->add_filters(); ?>
@@ -87,14 +94,14 @@ class Plugin {
 
 		?> 
 			<form method="post" action="?page=tainacan-ninja-forms&form_id=<?php echo $form_id; ?>">
+				<?php	$tainacanAdapterNF->display_config_collection(); ?>
+				<input class="button button-primary" type="submit" value="Salvar">
+			</form>	
+			<br>	
+			<form method="post" action="?page=tainacan-ninja-forms&form_id=<?php echo $form_id; ?>">
 				<?php	$tainacanAdapterNF->display(); ?>
 				<input class="button button-primary" type="submit" value="Salvar">
 			</form>
-
-			<form method="post" action="?page=tainacan-ninja-forms&form_id=<?php echo $form_id; ?>">
-				<?php	$tainacanAdapterNF->display_config_collection(); ?>
-				<input class="button button-primary" type="submit" value="Salvar">
-			</form>			
 		<?php
 	}
 
@@ -352,7 +359,7 @@ class Sub_List_Table extends \WP_List_Table
 }
 
 class Tainacan_Adapter_NF {
-	
+
 	private $TNC_collection_id = NULL;
 	private $NF_columns = [];
 
@@ -443,14 +450,16 @@ class Tainacan_Adapter_NF {
 				$options .=  ' <option ' . ($value == $metadata->get_id()?'selected':'') . ' value="' . $metadata->get_id() . '">' . $metadata->get_name() . '</option>';
 			}
 			?>
-				<label for="<?php echo $NF_key; ?>"> <?php echo $NF_label; ?> </label>
-				<select 
-					id="<?php echo $NF_key; ?>"
-					name="<?php echo "adapter[mapper][$NF_key]"; ?>"
-					value="<?php echo $value; ?>"
-				>
-					<?php echo $options; ?>
-				</select>
+				<div class="tainacan-ninja-control">
+					<label for="<?php echo $NF_key; ?>"> <?php echo $NF_label; ?> </label>
+					<select 
+						id="<?php echo $NF_key; ?>"
+						name="<?php echo "adapter[mapper][$NF_key]"; ?>"
+						value="<?php echo $value; ?>"
+					>
+						<?php echo $options; ?>
+					</select>
+				</div>
 			<?php
 		}
 	}

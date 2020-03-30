@@ -16,3 +16,10 @@ body {
 	background: #fff !important;
 	color: #000;
 }
+
+.tainacan-ninja-control {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
