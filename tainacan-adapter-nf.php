@@ -1,15 +1,15 @@
 <?php
 /*
-Plugin Name: TainacanNFCovid19
+Plugin Name: Tainacan-adapter-ninja-forms
 Plugin URI: tainacan.org
 Description: Plugin for tainacan submissions Ninja Forms
 Author: Media Lab / UFG
 Version: 0.0.1
-Text Domain: Tainacan-nf-covid19
+Text Domain: tainacan-adapter-nf
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
-namespace TainacanNFCovid19;
+namespace TainacanAdapterNF;
 
 // WP_List_Table is not loaded automatically so we need to load it in our application
 if( ! class_exists( 'WP_List_Table' ) ) {
@@ -266,8 +266,43 @@ class Sub_List_Table extends \WP_List_Table
 			if ($column_name == 'options') {
 				$id=$item['id'];
 				$form_id = $this->form_id;
-				$buttonPublish = "<button type='button' onClick='call_ajax(\"ajax_request\", [\"$id\", \"$form_id\", true]);'>Publicar </button>";
-				$buttonDraft = "<button type='button' onClick='call_ajax(\"ajax_request\", [\"$id\", \"$form_id\", false]);'>Rascunho </button>";
+				ob_start();
+				?>
+					<button 
+						type='button'
+						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", true], this, 
+							function(data, e) {
+								if (data.sucess) {
+									console.log("OK-adicionado!");
+									e.closest("tr").remove();
+								}
+							}
+					)'
+					>
+						Publicar
+					</button>
+				<?php 
+				$buttonPublish = ob_get_clean();
+
+				ob_start();
+				?>
+					<button 
+						type='button' 
+						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", false], this,
+							function(data, e) {
+								if (data.sucess) {
+									console.log("OK-adicionado como rascunho!");
+									e.closest("tr").remove();
+								}
+							}
+						);'
+						>
+							Rascunho
+						</button>
+				<?php
+				$buttonDraft = ob_get_clean();
+
+				//$buttonDraft = "<button type='button' onClick='call_ajax(\"ajax_request\", [\"$id\", \"$form_id\", false]);'>Rascunho </button>";
 				return "$buttonPublish $buttonDraft";
 			}
 			
@@ -416,4 +451,4 @@ class Tainacan_Adapter_NF {
 	}
 } 
 
-$TainacanNFCovid19 = new \TainacanNFCovid19\Plugin();
+$TainacanNFCovid19 = new \TainacanAdapterNF\Plugin();
