@@ -107,13 +107,13 @@ class Plugin {
 		?>
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
 				<?php	$tainacanAdapterNF->display_config_collection(); ?>
-				<input class="button button-primary" type="submit" value="Salvar">
+				<input class="button button-primary" type="submit" value="Aplicar coleção">
 			</form>	
 			<br>	
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
 				<?php	$tainacanAdapterNF->display(); ?>
 				<br>
-				<input class="button button-primary" type="submit" value="Salvar">
+				<input class="button button-primary" type="submit" value="Salvar mapeamento">
 			</form>
 		<?php
 	}
@@ -155,7 +155,7 @@ class Plugin {
 						</option>
 				<?php endforeach; ?>
 		</select>
-		<input class="button button-primary" type="submit" value="Filtrar">
+		<input class="button button-primary" type="submit" value="Aplicar formulário">
 		<?php
 	}
 
