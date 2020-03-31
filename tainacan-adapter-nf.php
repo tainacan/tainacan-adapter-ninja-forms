@@ -329,16 +329,9 @@ class Sub_List_Table extends \WP_List_Table
 					<button 
 						type='button'
 						class='button button-small'
-						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", true], this, 
-							function(data, e) {
-								if (data.sucess) {
-									e.disabled = true;
-									e.innerText = "Publicado";
-								}
-							}
-					)'
+						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", true], this)'
 					>
-					<img class="loading hide" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
+					<img class="loading hide" style="margin-bottom: -4px;" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
 					 Publicar
 					</button>
 				<?php 
@@ -349,22 +342,14 @@ class Sub_List_Table extends \WP_List_Table
 					<button 
 						type='button'
 						class='button button-small' 
-						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", false], this,
-							function(data, e) {
-								if (data.sucess) {
-									e.disabled = true;
-									e.innerText = "Salvo como Rascunho";
-								}
-							}
-						);'
+						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", false], this)'
 						>
-							<img class="loading hide" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
+							<img class="loading hide" style="margin-bottom: -4px;" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
 							Rascunho
 						</button>
 				<?php
 				$buttonDraft = ob_get_clean();
 
-				//$buttonDraft = "<button type='button' onClick='call_ajax(\"ajax_request\", [\"$id\", \"$form_id\", false]);'>Rascunho </button>";
 				return "$buttonView $buttonPublish $buttonDraft";
 			}
 			
