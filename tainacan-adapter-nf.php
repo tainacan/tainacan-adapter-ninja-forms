@@ -203,11 +203,6 @@ class Sub_List_Table extends \WP_List_Table
 			$this->form_id = $form_id;
 		}
 
-		//function get_columns()
-		//{
-		//	return $this->columns;
-		//}
-
 		/**
      * Prepare the items for the table to process
      *
@@ -216,7 +211,7 @@ class Sub_List_Table extends \WP_List_Table
 		public function prepare_items()
 		{
 			$this->fields = Ninja_Forms()->form( $this->form_id )->get_fields();
-			$columns = $this->get_columns(true);
+			$columns = $this->get_columns(true, 5);
 			$hidden = $this->get_hidden_columns();
 			$sortable = $this->get_sortable_columns();
 
@@ -243,21 +238,23 @@ class Sub_List_Table extends \WP_List_Table
      *
      * @return Array
      */
-		public function get_columns($add_option=false)
+		public function get_columns($add_option=false, $limit_of_col = false)
 		{
 			$columns = array();
+			$count = 1;
+
 			$hidden_field_types = apply_filters( 'ninja_forms_sub_hidden_field_types', array('submit') );
 			foreach ($this->fields as $id => $field) {
 				if( in_array( $field->get_setting( 'type' ), $hidden_field_types ) ) continue;
 				$key = $field->get_setting( 'key' );
 				$label = $field->get_setting( 'label' );
 				$columns[$key] = $label;
+				if ($limit_of_col !==false && $count++ >= $limit_of_col) break;
 			}
 
 			if($add_option) {
 				$columns['options'] = "opções";
 			}
-
 
 			return $columns;
 		}

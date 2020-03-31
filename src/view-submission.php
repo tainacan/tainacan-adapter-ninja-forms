@@ -12,11 +12,13 @@
   $sub_id = $_GET['sub_id'];
   $form_id = Ninja_Forms()->form( )->sub($sub_id)->get()->get_form_id();
   $fields = Ninja_Forms()->form( $form_id )->get_fields();
+  $hidden_field_types = apply_filters( 'ninja_forms_sub_hidden_field_types', array('submit') );
   $sub = Ninja_Forms()->form( )->get_sub($sub_id);
   $form_name = Ninja_Forms()->form( $form_id )->get_settings()['title'];
 
   $item = "";
   foreach ($fields as $key => $field) {
+    if( in_array( $field->get_setting( 'type' ), $hidden_field_types ) ) continue;
     $key = $field->get_setting( 'key' );
     $label = $field->get_setting( 'label' );
     $value = $sub->get_field_value( $key );
