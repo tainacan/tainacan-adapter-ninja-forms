@@ -353,7 +353,7 @@ class Sub_List_Table extends \WP_List_Table
 			}
 			
 			if( isset( $item[ $column_name ] ) ) {
-				return $item[ $column_name ];
+				return is_array($item[ $column_name ]) ? implode($item[ $column_name ], " - ") : $item[ $column_name ];
 			}
 			
 			return print_r( $item, true ) ;

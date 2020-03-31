@@ -5,11 +5,13 @@ function call_ajax(action, data, e) {
 
   const parent_el = e.parentElement;
   var children = [];
-  for (var i = 0; i < parent_el.children.length; i++)
+  for (var i = 0; i < parent_el.children.length; i++) {
+    parent_el.children[i].disabled = true
     children.push(parent_el.children[i]);
+  }
 
   var loading_el = e.getElementsByClassName('loading')[0];
-  loading_el.classList.remove('hide');  
+  loading_el.classList.remove('hide');
 
   jQuery.ajax({
     url: ajaxurl,
@@ -19,7 +21,6 @@ function call_ajax(action, data, e) {
     },
     success:function(data) {
       loading_el.classList.add('hide');
-      children.forEach(function(element) { return element.disabled = true });
       
       if (data.sucess) {
         e.disabled = true;
@@ -33,6 +34,7 @@ function call_ajax(action, data, e) {
     },
     error: function(errorThrown) {
       loading_el.classList.add('hide');
+      children.forEach(function(element) { return element.disabled = false });
     }
   });
 }

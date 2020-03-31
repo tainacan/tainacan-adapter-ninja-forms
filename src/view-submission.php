@@ -20,6 +20,7 @@
     $key = $field->get_setting( 'key' );
     $label = $field->get_setting( 'label' );
     $value = $sub->get_field_value( $key );
+    $value = is_array($value) ? implode($value, ' - ') : $value;
     $item .= "<li>
                 <span class='label'>$label</span>
                 <div class='value'>$value</div>
@@ -42,7 +43,7 @@
             <h2 class="hndle ui-sortable-handle"><span><?php echo $form_name; ?></span></h2>
             <div class="inside">
               <div class="main">
-                <p>Esta é a submissão de número #<em><?php echo $sub->get_seq_num(); ?></em> ao formulário <em><?php echo $form_name; ?></em>. Use os botões abaixo para enviá-la ao Tainacan como um item Público ou Privado.</p>
+                <p>Esta é a submissão de número #<em><?php echo $sub->get_seq_num(); ?></em> ao formulário <em><?php echo $form_name; ?></em>. Use os botões abaixo para enviá-la ao Tainacan como um item Público ou como um Rascunho.</p>
               </div>
             </div>
             <div id="major-publishing-actions">
@@ -67,6 +68,6 @@
           </div>
         </div>
       </div>
-    </div>                                     
+    </div>
  </div>
 <?php endif; ?>
