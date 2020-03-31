@@ -59,28 +59,64 @@ class Plugin {
 	
 	public function display()
 	{
-		$this->submissions_page();
+		$is_sub = (!isset($_GET['tab']) || $_GET['tab'] == 'sub');
+		$form_param = (isset($_GET['form_id']) ? "&form_id=".$_GET['form_id'] : '' );
+		
+		
+		?>
+			<div class="wrap">
+				<h1>Tainacan Adapter for Ninja Forms</h1>
+				
+				<h2 class="nav-tab-wrapper">
+					<a href="?page=tainacan-ninja-forms<?php echo $form_param;?>&tab=sub"    class="nav-tab <?php echo ( $is_sub ? 'nav-tab-active':''); ?>">Submissões</a>
+					<a href="?page=tainacan-ninja-forms<?php echo $form_param;?>&tab=mapper" class="nav-tab <?php echo ( !$is_sub ? 'nav-tab-active':''); ?>">Mapeamento</a>
+				</h2>
+				<div class="tabs-content">
+					<?php
+						if( $is_sub ) {
+							$this->display_submissions_page();
+						} else {
+							$this->display_mapper_page();
+						}
+					?>
+				</div>
+			</div>
+		<?php
 	}
 	
-	function submissions_page()
+	function display_submissions_page()
 	{
 		?>
-		<div class="wrap">
-			<h1>Tainacan Adapter for Ninja Forms</h1>
 			<form method="get">
 				<input name="page" value="tainacan-ninja-forms" type="hidden"/>
 				<?php	$this->add_filters(); ?>
+				<?php	$this->display_table(); ?>
 			</form>
-
-			<?php
-				$this->mount_table();
-			?>
-			
-		</div>
 		<?php
 	}
 
-	public function mount_table()
+	function display_mapper_page() {
+		if ( ! isset($_GET['form_id']) )
+			return;
+		$form_id = $_GET['form_id'];
+
+		$subListTable = new Sub_List_Table($form_id);
+		$subListTable->prepare_items();
+		$tainacanAdapterNF = new Tainacan_Adapter_NF($subListTable->get_columns());
+		?>
+			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
+				<?php	$tainacanAdapterNF->display_config_collection(); ?>
+				<input class="button button-primary" type="submit" value="Salvar">
+			</form>	
+			<br>	
+			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
+				<?php	$tainacanAdapterNF->display(); ?>
+				<input class="button button-primary" type="submit" value="Salvar">
+			</form>
+		<?php
+	}
+
+	public function display_table()
 	{
 		if ( ! isset($_GET['form_id']) )
 			return;
@@ -89,20 +125,6 @@ class Plugin {
 		$subListTable = new Sub_List_Table($form_id);
 		$subListTable->prepare_items();
 		$subListTable->display();
-
-		$tainacanAdapterNF = new Tainacan_Adapter_NF($subListTable->get_columns());
-
-		?> 
-			<form method="post" action="?page=tainacan-ninja-forms&form_id=<?php echo $form_id; ?>">
-				<?php	$tainacanAdapterNF->display_config_collection(); ?>
-				<input class="button button-primary" type="submit" value="Salvar">
-			</form>	
-			<br>	
-			<form method="post" action="?page=tainacan-ninja-forms&form_id=<?php echo $form_id; ?>">
-				<?php	$tainacanAdapterNF->display(); ?>
-				<input class="button button-primary" type="submit" value="Salvar">
-			</form>
-		<?php
 	}
 
 	public function add_filters()
@@ -273,6 +295,14 @@ class Sub_List_Table extends \WP_List_Table
 			if ($column_name == 'options') {
 				$id=$item['id'];
 				$form_id = $this->form_id;
+
+				$buttonView = 
+				"<button
+					type='button'
+					class='button button-small'>
+					Visualizar
+				</button>";
+
 				ob_start();
 				?>
 					<button 
@@ -312,7 +342,7 @@ class Sub_List_Table extends \WP_List_Table
 				$buttonDraft = ob_get_clean();
 
 				//$buttonDraft = "<button type='button' onClick='call_ajax(\"ajax_request\", [\"$id\", \"$form_id\", false]);'>Rascunho </button>";
-				return "$buttonPublish $buttonDraft";
+				return "$buttonView $buttonPublish $buttonDraft";
 			}
 			
 			if( isset( $item[ $column_name ] ) ) {
