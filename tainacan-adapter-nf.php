@@ -243,7 +243,7 @@ class Sub_List_Table extends \WP_List_Table
 			$columns = array();
 			$count = 1;
 
-			$hidden_field_types = apply_filters( 'ninja_forms_sub_hidden_field_types', array('submit') );
+			$hidden_field_types = apply_filters( 'ninja_forms_sub_hidden_field_types', array('submit', 'html', 'recaptcha', 'spam', 'hr') );
 			foreach ($this->fields as $id => $field) {
 				if( in_array( $field->get_setting( 'type' ), $hidden_field_types ) ) continue;
 				$key = $field->get_setting( 'key' );
@@ -425,6 +425,7 @@ class Tainacan_Adapter_NF {
 		if ($item->validate()) {
 			$items_repository->insert( $item );
 			foreach($mapper as $key => $metada) {
+				if ($metada == '') continue;
 				$value = $sub->get_field_value($key);
 				$metadatum = $metadatum_repository->fetch($metada);
 				$itemMetadada = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
@@ -494,6 +495,7 @@ class Tainacan_Adapter_NF {
 						name="<?php echo "adapter[mapper][$NF_key]"; ?>"
 						value="<?php echo $value; ?>"
 					>
+						<option value=""> Não mapeado </option>
 						<?php echo $options; ?>
 					</select>
 				</div>
