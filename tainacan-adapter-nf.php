@@ -123,7 +123,7 @@ class Plugin {
 		?>
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
 				<?php	$tainacanAdapterNF->display_config_collection(); ?>
-				<input class="button button-primary" type="submit" value="Aplicar coleção">
+				<input class="button" aria-label="" type="submit" value="Aplicar coleção">
 			</form>	
 			<br>	
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
@@ -457,8 +457,8 @@ class Tainacan_Adapter_NF {
 			$options .=  ' <option ' . ($this->TNC_collection_id == $col->get_id()?'selected':'') . ' value="' . $col->get_id() . '">' . $col->get_name() . '</option>';
 		}
 		?>
-				<label for="tnc_collection"> Coleção </label>
 				<select
+					aria-label="Coleção"
 					id="tnc_collection"
 					name="tnc_collection"
 					value="<?php echo $this->TNC_collection_id; ?>"
