@@ -17,6 +17,10 @@ body {
 	color: #000;
 }
 
+img.hide {
+	display: none;
+}
+
 .tainacan-ninja-control {
 	display: flex;
 	justify-content: space-between;

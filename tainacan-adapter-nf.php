@@ -28,9 +28,8 @@ class Plugin {
 		$main_css = plugins_url('statics/css/main.css',__FILE__ );
 		$main_js = plugins_url('statics/js/ajax.js',__FILE__ );
 
-		wp_register_style( 'tainacan_nf_main', $main_css );
-		//wp_enqueue_script( 'teste', $main_js);
-		
+		//wp_register_style( 'tainacan_nf_main', $main_css );
+		wp_enqueue_style( 'tainacan_nf_main', $main_css );
 		
 		wp_enqueue_script(
 			'example-ajax-script',
@@ -317,7 +316,8 @@ class Sub_List_Table extends \WP_List_Table
 							}
 					)'
 					>
-						Publicar
+					<img class="loading hide" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
+					 Publicar
 					</button>
 				<?php 
 				$buttonPublish = ob_get_clean();
@@ -336,6 +336,7 @@ class Sub_List_Table extends \WP_List_Table
 							}
 						);'
 						>
+							<img class="loading hide" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
 							Rascunho
 						</button>
 				<?php
