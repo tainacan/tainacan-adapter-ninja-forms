@@ -53,7 +53,21 @@ class Plugin {
 			'tainacan-ninja-forms',
 			[$this, "display"]
 		);
-		$this->get_static_files();
+		
+		add_submenu_page( 
+			'tainacan-ninja-forms',
+			'View Item', 
+			'View Item', 
+			'manage_options',
+			'tainacan-ninja-forms-view',
+			[$this, "display_view"]
+		);
+
+		//$this->get_static_files();
+	}
+
+	public function display_view() {
+		include('src/view-submission.php');
 	}
 	
 	public function display()
@@ -304,12 +318,11 @@ class Sub_List_Table extends \WP_List_Table
 				$id=$item['id'];
 				$form_id = $this->form_id;
 
-				$buttonView = 
-				"<button
-					type='button'
-					class='button button-small'>
-					Visualizar
-				</button>";
+				$buttonView = "
+					<a href='?page=tainacan-ninja-forms-view&sub_id=$id' class='button button-small button-secondary'>
+						Visualizar
+					</a>
+				";
 
 				ob_start();
 				?>
