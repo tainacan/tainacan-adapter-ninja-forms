@@ -80,18 +80,20 @@ class Plugin {
 			<div class="wrap">
 				<h1>Tainacan Adapter for Ninja Forms</h1>
 				
-				<h2 class="nav-tab-wrapper">
-					<a href="?page=tainacan-ninja-forms<?php echo $form_param;?>&tab=sub"    class="nav-tab <?php echo ( $is_sub ? 'nav-tab-active':''); ?>">Submissões</a>
-					<a href="?page=tainacan-ninja-forms<?php echo $form_param;?>&tab=mapper" class="nav-tab <?php echo ( !$is_sub ? 'nav-tab-active':''); ?>">Mapeamento</a>
-				</h2>
-				<div class="tabs-content">
-					<?php
-						if( $is_sub ) {
-							$this->display_submissions_page();
-						} else {
-							$this->display_mapper_page();
-						}
-					?>
+				<div class="tainacan-ninja-tabs">
+					<h2 class="nav-tab-wrapper">
+						<a href="?page=tainacan-ninja-forms<?php echo $form_param;?>&tab=sub"    class="nav-tab <?php echo ( $is_sub ? 'nav-tab-active':''); ?>">Submissões</a>
+						<a href="?page=tainacan-ninja-forms<?php echo $form_param;?>&tab=mapper" class="nav-tab <?php echo ( !$is_sub ? 'nav-tab-active':''); ?>">Mapeamento</a>
+					</h2>
+					<div class="tabs-content">
+						<?php
+							if( $is_sub ) {
+								$this->display_submissions_page();
+							} else {
+								$this->display_mapper_page();
+							}
+						?>
+					</div>
 				</div>
 			</div>
 		<?php
@@ -109,8 +111,11 @@ class Plugin {
 	}
 
 	function display_mapper_page() {
-		if ( ! isset($_GET['form_id']) )
+		if ( ! isset($_GET['form_id']) ) {
+			echo'<p>Nenhum formulário carregado ainda. Volte para a aba anterior e escolha um.</p>';
 			return;
+		}
+
 		$form_id = $_GET['form_id'];
 
 		$subListTable = new Sub_List_Table($form_id);
@@ -119,20 +124,24 @@ class Plugin {
 		?>
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
 				<?php	$tainacanAdapterNF->display_config_collection(); ?>
-				<input class="button button-primary" type="submit" value="Salvar">
+				<input class="button button-primary" type="submit" value="Aplicar coleção">
 			</form>	
 			<br>	
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
 				<?php	$tainacanAdapterNF->display(); ?>
-				<input class="button button-primary" type="submit" value="Salvar">
+				<br>
+				<input class="button button-primary" type="submit" value="Salvar mapeamento">
 			</form>
 		<?php
 	}
 
 	public function display_table()
 	{
-		if ( ! isset($_GET['form_id']) )
+		if ( ! isset($_GET['form_id']) ) {
+			echo'<p>Nenhum formulário carregado ainda.</p>';
 			return;
+		}
+
 		$form_id = $_GET['form_id'];
 
 		$subListTable = new Sub_List_Table($form_id);
@@ -166,7 +175,7 @@ class Plugin {
 						</option>
 				<?php endforeach; ?>
 		</select>
-		<input class="button button-primary" type="submit" value="Filtrar">
+		<input class="button button-primary" type="submit" value="Aplicar formulário">
 		<?php
 	}
 
