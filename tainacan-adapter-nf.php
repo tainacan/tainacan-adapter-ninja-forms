@@ -106,12 +106,15 @@ class Plugin {
 	
 	function display_submissions_page()
 	{
-		$this->display_submissions_table();
+		?>
+			<p>Estas são as submissões feitas ao formulário que ainda não foram enviadas ao Tainacan.</p>
+			<?php $this->display_submissions_table(); ?>
+		<?php
 	}
 
 	function display_mapper_page() {
 		if ( ! isset($_GET['form_id']) ) {
-			echo'<p>Nenhum formulário carregado ainda.</p>';
+			echo'<p><em>Nenhum formulário carregado ainda.</em></p>';
 			return;
 		}
 
@@ -137,7 +140,7 @@ class Plugin {
 	public function display_submissions_table()
 	{
 		if ( ! isset($_GET['form_id']) ) {
-			echo'<p>Nenhum formulário carregado ainda.</p>';
+			echo'<p><em>Nenhum formulário carregado ainda.</em></p>';
 			return;
 		}
 
