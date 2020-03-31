@@ -97,8 +97,11 @@ class Plugin {
 	}
 
 	function display_mapper_page() {
-		if ( ! isset($_GET['form_id']) )
+		if ( ! isset($_GET['form_id']) ) {
+			echo'<p>Nenhum formulário carregado ainda. Volte para a aba anterior e escolha um.</p>';
 			return;
+		}
+
 		$form_id = $_GET['form_id'];
 
 		$subListTable = new Sub_List_Table($form_id);
@@ -120,8 +123,11 @@ class Plugin {
 
 	public function display_table()
 	{
-		if ( ! isset($_GET['form_id']) )
+		if ( ! isset($_GET['form_id']) ) {
+			echo'<p>Nenhum formulário carregado ainda.</p>';
 			return;
+		}
+
 		$form_id = $_GET['form_id'];
 
 		$subListTable = new Sub_List_Table($form_id);
