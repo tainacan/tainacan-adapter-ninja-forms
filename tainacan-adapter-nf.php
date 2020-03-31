@@ -319,8 +319,8 @@ class Sub_List_Table extends \WP_List_Table
 						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", true], this, 
 							function(data, e) {
 								if (data.sucess) {
-									console.log("OK-adicionado!");
-									e.closest("tr").remove();
+									e.disabled = true;
+									e.innerText = "Publicado";
 								}
 							}
 					)'
@@ -339,8 +339,8 @@ class Sub_List_Table extends \WP_List_Table
 						onClick='call_ajax("ajax_request", ["<?php echo $id; ?>", "<?php echo $form_id; ?>", false], this,
 							function(data, e) {
 								if (data.sucess) {
-									console.log("OK-adicionado como rascunho!");
-									e.closest("tr").remove();
+									e.disabled = true;
+									e.innerText = "Salvo como Rascunho";
 								}
 							}
 						);'
