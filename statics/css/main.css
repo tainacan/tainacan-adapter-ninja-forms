@@ -32,6 +32,8 @@ img.hide {
 
 .tainacan-ninja-form-answers {
 	list-style: none;
+	padding: 1em 2em;
+	font-size: 0.875rem;
 }
 .tainacan-ninja-form-answers li {
 	margin-bottom: 1rem;

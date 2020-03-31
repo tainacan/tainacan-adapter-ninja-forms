@@ -37,47 +37,29 @@
           </ul>
         </div>
         <div id="postbox-container-1" class="postbox-container">
-          <div id="normal-sortables" class="meta-box-sortables ui-sortable">
-            <div id="metabox" class="postbox">
-              <button type="button" class="handlediv" aria-expanded="true">
-                <span class="screen-reader-text">Metabox collapse</span>
-                <span class="toggle-indicator" aria-hidden="true"></span>
-              </button>
-              <h2 class="hndle ui-sortable-handle"><span><?php echo $form_name; ?></span></h2>
-              <div class="inside">
-                <div class="main">
-                  <button 
-                    type='button'
-                    class='button button-small'
-                    onClick='call_ajax("ajax_request", ["<?php echo $sub_id; ?>", "<?php echo $form_id; ?>", true], this, 
-                      function(data, e) {
-                        if (data.sucess) {
-                          console.log("OK-adicionado!");
-                          e.closest("tr").remove();
-                        }
-                      }
-                    )'
+          <br>
+          <div id="metabox" class="postbox">
+            <h2 class="hndle ui-sortable-handle"><span><?php echo $form_name; ?></span></h2>
+            <div class="inside">
+              <div class="main">
+                <p>Esta é a submissão de número #<em><?php echo $sub->get_seq_num(); ?></em> ao formulário <em><?php echo $form_name; ?></em>. Use os botões abaixo para enviá-la ao Tainacan como um item Público ou Privado.</p>
+                <button 
+                  type='button'
+                  class='button button-primary'
+                  onClick='call_ajax("ajax_request", ["<?php echo $sub_id; ?>", "<?php echo $form_id; ?>", true], this)'
+                >
+                  <img class="loading hide" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
+                  Publicar
+                </button>
+
+                <button 
+                  type='button'
+                  class='button' 
+                  onClick='call_ajax("ajax_request", ["<?php echo $sub_id; ?>", "<?php echo $form_id; ?>", false], this);'
                   >
                     <img class="loading hide" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
-                    Publicar
-                  </button>
-
-                  <button 
-                    type='button'
-                    class='button button-small' 
-                    onClick='call_ajax("ajax_request", ["<?php echo $sub_id; ?>", "<?php echo $form_id; ?>", false], this,
-                      function(data, e) {
-                        if (data.sucess) {
-                          console.log("OK-adicionado como rascunho!");
-                          e.closest("tr").remove();
-                        }
-                      }
-                    );'
-                    >
-                      <img class="loading hide" src="<?php echo esc_url( get_admin_url() . 'images/loading.gif' ); ?>" />
-                      Rascunho
-                  </button>
-                </div>
+                    Rascunho
+                </button>
               </div>
             </div>
           </div>
