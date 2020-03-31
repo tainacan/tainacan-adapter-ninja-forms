@@ -79,7 +79,12 @@ class Plugin {
 		?>
 			<div class="wrap">
 				<h1>Tainacan Adapter for Ninja Forms</h1>
-				
+				<br>
+				<form method="get">
+					<input name="page" value="tainacan-ninja-forms" type="hidden"/>
+					<?php	$this->add_filters(); ?>
+				</form>
+				<br>
 				<div class="tainacan-ninja-tabs">
 					<h2 class="nav-tab-wrapper">
 						<a href="?page=tainacan-ninja-forms<?php echo $form_param;?>&tab=sub"    class="nav-tab <?php echo ( $is_sub ? 'nav-tab-active':''); ?>">Submissões</a>
@@ -101,18 +106,12 @@ class Plugin {
 	
 	function display_submissions_page()
 	{
-		?>
-			<form method="get">
-				<input name="page" value="tainacan-ninja-forms" type="hidden"/>
-				<?php	$this->add_filters(); ?>
-				<?php	$this->display_table(); ?>
-			</form>
-		<?php
+		$this->display_submissions_table();
 	}
 
 	function display_mapper_page() {
 		if ( ! isset($_GET['form_id']) ) {
-			echo'<p>Nenhum formulário carregado ainda. Volte para a aba anterior e escolha um.</p>';
+			echo'<p>Nenhum formulário carregado ainda.</p>';
 			return;
 		}
 
@@ -135,7 +134,7 @@ class Plugin {
 		<?php
 	}
 
-	public function display_table()
+	public function display_submissions_table()
 	{
 		if ( ! isset($_GET['form_id']) ) {
 			echo'<p>Nenhum formulário carregado ainda.</p>';
