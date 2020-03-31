@@ -43,6 +43,9 @@
             <div class="inside">
               <div class="main">
                 <p>Esta é a submissão de número #<em><?php echo $sub->get_seq_num(); ?></em> ao formulário <em><?php echo $form_name; ?></em>. Use os botões abaixo para enviá-la ao Tainacan como um item Público ou Privado.</p>
+              </div>
+            </div>
+            <div id="major-publishing-actions">
                 <button 
                   type='button'
                   class='button button-primary'
@@ -61,7 +64,6 @@
                     Rascunho
                 </button>
               </div>
-            </div>
           </div>
         </div>
       </div>
