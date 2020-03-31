@@ -29,3 +29,16 @@ img.hide {
 	border-top: none;
 	padding: 1em 2em;
 }
+
+.tainacan-ninja-form-answers {
+	list-style: none;
+}
+.tainacan-ninja-form-answers li {
+	margin-bottom: 1rem;
+}
+.tainacan-ninja-form-answers li .label {
+	font-weight: bold;
+}
+.tainacan-ninja-form-answers li .value {
+	font-weight: normal;
+}
