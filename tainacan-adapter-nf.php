@@ -295,6 +295,27 @@ class Sub_List_Table extends \WP_List_Table
 				foreach ($this->fields as $key => $field) {
 					$key = $field->get_setting( 'key' );
 					$item[$key] = $sub->get_field_value($key);
+					
+					//pega o "Label" quando for um "options", pois o "Value" do ninja form não aceita caracteres especiais.
+					if( $field->get_setting('options') !==null && is_array($field->get_setting('options')) ) {
+						$value = $sub->get_field_value($key);
+						$options = $field->get_setting('options');
+						foreach($options as $option) {
+							if(is_array($value)) {
+								foreach($value as $idx => $v) {
+									if ($v == $option['value']) {
+										$item[$key][$idx] = $option['label'];
+									}
+								}
+							} else {
+								if ($value == $option['value']) {
+									$item[$key] = $option['label'];
+									break;
+								}
+							}
+						}
+					}
+
 				}
 				
 				$data[] = $item;
