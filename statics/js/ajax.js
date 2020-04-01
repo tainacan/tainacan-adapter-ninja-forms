@@ -39,7 +39,7 @@ function call_ajax(action, data, e) {
     error: function(errorThrown) {
       loading_el.classList.add('hide');
       children.forEach(function(element) { return element.disabled = false });
-      presentNotice('notice-error', '<pre><code>' + JSON.stringify(errorThrown.errors) + '</code></pre>')
+      presentNotice('notice-error', '<pre style="white-space: normal;"><code>' + JSON.stringify(errorThrown.errors) + '</code></pre>')
     }
   });
 }
