@@ -32,6 +32,18 @@
   ?>
   <div class="wrap">
 		<h1>Tainacan Adapter for Ninja Forms</h1>
+    <br>
+    <div 
+        id="submission-result-notice"
+        class="notice is-dismissible notice-hidden">
+      <p></p>
+      <button
+          onClick="dismissNotice(this)"
+          type="button"
+          class="notice-dismiss">
+        <span class="screen-reader-text">Dispensar aviso.</span>
+      </button>
+    </div>
     <div id="poststuff">
       <div id="post-body" class="metabox-holder columns-2">
         <div id="post-body-content" class="post-body-content">

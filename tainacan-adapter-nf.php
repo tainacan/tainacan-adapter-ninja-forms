@@ -85,6 +85,17 @@ class Plugin {
 					<?php	$this->add_filters(); ?>
 				</form>
 				<br>
+				<div 
+        			id="submission-result-notice"
+					class="notice is-dismissible notice-hidden">
+					<p></p>
+					<button
+						onClick="dismissNotice(this)"
+						type="button"
+						class="notice-dismiss">
+						<span class="screen-reader-text">Dispensar aviso.</span>
+					</button>
+				</div>
 				<div class="tainacan-ninja-tabs">
 					<h2 class="nav-tab-wrapper">
 						<a href="?page=tainacan-ninja-forms<?php echo $form_param;?>&tab=sub"    class="nav-tab <?php echo ( $is_sub ? 'nav-tab-active':''); ?>">Submissões</a>
@@ -253,7 +264,7 @@ class Sub_List_Table extends \WP_List_Table
 			}
 
 			if($add_option) {
-				$columns['options'] = "opções";
+				$columns['options'] = "Opções";
 			}
 
 			return $columns;

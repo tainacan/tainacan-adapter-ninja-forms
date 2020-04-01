@@ -30,11 +30,30 @@ function call_ajax(action, data, e) {
           e.innerText = 'Publicado';
         else if (e.innerText === 'Rascunho')
           e.innerText = 'Salvo como Rascunho';
+
+        presentNotice('notice-success', 'Enviado para o Tainacan com sucesso.')
+      } else {
+        presentNotice('notice-error', 'Um ou mais erros ocorreram ao tentar enviar esta submissão para o Tainacan. Os detalhes são: <pre><code>' + JSON.stringify(data.errors) + '</code></pre>')
       }
     },
     error: function(errorThrown) {
       loading_el.classList.add('hide');
       children.forEach(function(element) { return element.disabled = false });
+      presentNotice('notice-error', '<pre><code>' + JSON.stringify(errorThrown.errors) + '</code></pre>')
     }
   });
+}
+
+function dismissNotice(e) {
+  e.parenElement.classList.add('notice-hidden');
+}
+
+function presentNotice(typeClass, message) {
+  var notice = document.getElementById('submission-result-notice');
+
+  if (notice) {
+    notice.firstElementChild.innerHTML = message;
+    notice.classList.add(typeClass);
+    notice.classList.remove('notice-hidden');
+  }
 }
