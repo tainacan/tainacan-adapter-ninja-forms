@@ -425,6 +425,15 @@ class Tainacan_Adapter_NF {
 		$this->NF_columns = $NF_columns;
 	}
 
+	protected function get_field_id_by_key( $field_key, $form_id )
+	{
+			global $wpdb;
+
+			$field_id = $wpdb->get_var( "SELECT id FROM {$wpdb->prefix}nf3_fields WHERE `key` = '{$field_key}' AND `parent_id` = {$form_id}" );
+
+			return $field_id;
+	}
+
 	public function NF_2_TNC($id_sub, $form_id, $publish) {
 		$sub = Ninja_Forms()->form( $form_id )->get_sub($id_sub);
 		$mapper = get_option("tainacan_adapter_NF_mapper", []);
@@ -439,8 +448,7 @@ class Tainacan_Adapter_NF {
 
 		$collection = $collections_repository->fetch($this->TNC_collection_id);
 		$item = new \Tainacan\Entities\Item();
-		if ($publish === true)
-			$item->set_status("publish");
+		$item->set_status("auto-draft");
 		
 		$item->set_collection($collection);
 		if ($item->validate()) {
@@ -448,6 +456,28 @@ class Tainacan_Adapter_NF {
 			foreach($mapper as $key => $metada) {
 				if ($metada == '') continue;
 				$value = $sub->get_field_value($key);
+
+				//pega o "Label" quando for um "options", pois o "Value" do ninja form não aceita caracteres especiais.
+				$fields_id = $this->get_field_id_by_key($key, $form_id);
+				$field = Ninja_Forms()->form( $form_id )->get_field($fields_id);
+				if( $field->get_setting('options') !==null && is_array($field->get_setting('options')) ) {
+					$options = $field->get_setting('options');
+					foreach($options as $option) {
+						if(is_array($value)) {
+							foreach($value as $idx => $v) {
+								if ($v == $option['value']) {
+									$value[$idx] = $option['label'];
+								}
+							}
+						} else {
+							if ($value == $option['value']) {
+								$value = $option['label'];
+								break;
+							}
+						}
+					}
+				}
+
 				$metadatum = $metadatum_repository->fetch($metada);
 				$itemMetadada = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
 				$itemMetadada->set_value($value);
@@ -460,7 +490,16 @@ class Tainacan_Adapter_NF {
 		} else {
 			$errors[] = $item->get_errors();
 		}
+
 		if( empty( $errors ) ) {
+			if ($publish === true) 
+				$item->set_status("publish");
+			else 
+				$item->set_status("draft");
+			
+			if ( $item->validate() )
+				$items_repository->insert( $item );
+
 			wp_trash_post($id_sub);
 			return ["sucess"=>true];
 		}
