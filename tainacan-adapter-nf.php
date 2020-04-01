@@ -136,12 +136,12 @@ class Plugin {
 		$tainacanAdapterNF = new Tainacan_Adapter_NF($subListTable->get_columns());
 		?>
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
-				<?php	$tainacanAdapterNF->display_config_collection(); ?>
+				<?php	$tainacanAdapterNF->display_config_collection($form_id); ?>
 				<input class="button" aria-label="" type="submit" value="Aplicar coleção">
 			</form>	
 			<br>	
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
-				<?php	$tainacanAdapterNF->display(); ?>
+				<?php	$tainacanAdapterNF->display($form_id); ?>
 				<br>
 				<input class="button button-primary" type="submit" value="Salvar mapeamento">
 			</form>
@@ -447,8 +447,8 @@ class Tainacan_Adapter_NF {
 
 	public function NF_2_TNC($id_sub, $form_id, $publish) {
 		$sub = Ninja_Forms()->form( $form_id )->get_sub($id_sub);
-		$mapper = get_option("tainacan_adapter_NF_mapper", []);
-		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection", NULL);
+		$mapper = get_option("tainacan_adapter_NF_mapper-$form_id", []);
+		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection-$form_id", NULL);
 		$errors = [];
 
 		$collections_repository = \Tainacan\Repositories\Collections::get_instance();
@@ -518,11 +518,12 @@ class Tainacan_Adapter_NF {
 		return ["sucess"=>false, "errors"=>$errors];
 	}
 
-	public function display_config_collection() {
+	public function display_config_collection($form_id) {
+
 		if ( isset( $_POST['tnc_collection'] ) ) {
-			update_option("tainacan_adapter_NF_collection", $_POST['tnc_collection']);
+			update_option("tainacan_adapter_NF_collection-$form_id", $_POST['tnc_collection']);
 		}
-		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection", $this->TNC_collection_id);
+		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection-$form_id", $this->TNC_collection_id);
 		$collections_repository = \Tainacan\Repositories\Collections::get_instance();
 		$collections = $collections_repository->fetch([], 'OBJECT');
 		$options='';
@@ -541,12 +542,12 @@ class Tainacan_Adapter_NF {
 		<?php
 	}
 
-	public function display() {
+	public function display($form_id) {
 		if ( isset( $_POST['adapter'] ) ) {
-			update_option("tainacan_adapter_NF_mapper", $_POST['adapter']['mapper']);
+			update_option("tainacan_adapter_NF_mapper-$form_id", $_POST['adapter']['mapper']);
 		}
-		$mapper = get_option("tainacan_adapter_NF_mapper", []);
-		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection", $this->TNC_collection_id);
+		$mapper = get_option("tainacan_adapter_NF_mapper-$form_id", []);
+		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection-$form_id", $this->TNC_collection_id);
 		if( $this->TNC_collection_id == NULL )
 			return;
 		$metadatum_repository = \Tainacan\Repositories\Metadata::get_instance();
