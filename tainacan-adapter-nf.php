@@ -497,11 +497,12 @@ class Tainacan_Adapter_NF {
 			else 
 				$item->set_status("draft");
 			
-			if ( $item->validate() )
+			if ( $item->validate() ) {
 				$items_repository->insert( $item );
-
-			wp_trash_post($id_sub);
-			return ["sucess"=>true];
+				wp_trash_post($id_sub);
+				return ["sucess"=>true];
+			}
+			$errors[] = $item->get_errors();
 		}
 		return ["sucess"=>false, "errors"=>$errors];
 	}
