@@ -484,7 +484,7 @@ class Tainacan_Adapter_NF {
 				if ($itemMetadada->validate()) {
 					$itemMetadada = $item_metadata_repository->insert($itemMetadada);
 				} else {
-					$errors[] = $itemMetadada->get_errors();
+					$errors[] = ["description" => $itemMetadada->get_errors(), "value" => $value] ;
 				}
 			}
 		} else {
