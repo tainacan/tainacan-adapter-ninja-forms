@@ -47,8 +47,8 @@ class Plugin {
 	function add_theme_menu_item() {
 		add_submenu_page(
 			'tainacan_admin',
-			"Ninja Forms Adapter",
-			"Ninja Forms Adapter",
+			"Moderação de Submissões",
+			"Moderação de Submissões",
 			'manage_options',
 			'tainacan-ninja-forms',
 			[$this, "display"]
@@ -78,7 +78,7 @@ class Plugin {
 		
 		?>
 			<div class="wrap">
-				<h1>Tainacan Adapter for Ninja Forms</h1>
+				<h1>Moderação de Submissões</h1>
 				<br>
 				<form method="get">
 					<input name="page" value="tainacan-ninja-forms" type="hidden"/>

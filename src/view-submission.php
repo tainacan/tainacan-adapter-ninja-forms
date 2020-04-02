@@ -1,9 +1,9 @@
 <?php if( !isset( $_GET['sub_id'] ) ): ?>
   <div class="wrap">
-		<h1>Tainacan Adapter for Ninja Forms</h1>
+		<h1>Moderação de Submissões</h1>
     <div class="notice">
       <p>
-        nenhum item corresponde
+        Nenhum item correspondente
       </p>
     </div>
   </div>
@@ -31,7 +31,7 @@
   }
   ?>
   <div class="wrap">
-		<h1>Tainacan Adapter for Ninja Forms</h1>
+		<h1>Moderação de Submissões</h1>
     <br>
     <div 
         id="submission-result-notice"
