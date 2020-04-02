@@ -12,6 +12,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 namespace TainacanAdapterNF;
 
 // WP_List_Table is not loaded automatically so we need to load it in our application
+require_once('src/TainacanFieldsListSelectNF.php');
 if( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -21,7 +22,34 @@ class Plugin {
 	public function __construct() {
 		add_action("admin_menu", [$this, "add_theme_menu_item"], 20);
 		add_action('admin_enqueue_scripts', [$this, 'get_static_files']);
-		add_action( 'wp_ajax_ajax_request', [$this, 'ajax_request'] );
+		add_action('wp_ajax_ajax_request', [$this, 'ajax_request'] );
+		$this->load_register_fields();
+	}
+
+	public function load_register_fields() {
+		if (class_exists('Ninja_Forms')) {
+			add_filter( 'ninja_forms_field_type_sections', [$this, 'tainacanAddSectionNF']);
+			add_filter( 'ninja_forms_register_fields', [$this, 'registerFieldsNF']);
+			\Ninja_Forms::instance()->plugins_loaded();
+		}
+	}
+
+	function tainacanAddSectionNF($sections) {
+		//iterate over all collection and create a section for each
+		$sections['tainacan'] = array(
+			'id' => 'tainacan',
+			'nicename' => __( 'Tainacan', 'ninja-forms' ),
+			'fieldTypes' => array(),
+		);
+		return $sections;
+	}
+
+	function registerFieldsNF($fields) {
+		$name = 'relationship-collection';
+		$lable = "Relacionamento";
+		$field = new \TainacanAdapterNF\Tainacan_NF_Fields_ListSelect($name, $label);
+		$fields['relationship-collection'] =  $field;
+		return $fields;
 	}
 
 	function get_static_files() {
@@ -54,7 +82,7 @@ class Plugin {
 			[$this, "display"]
 		);
 		
-		add_submenu_page( 
+		add_submenu_page(
 			'tainacan-ninja-forms',
 			'View Item', 
 			'View Item', 
@@ -63,7 +91,27 @@ class Plugin {
 			[$this, "display_view"]
 		);
 
-		//$this->get_static_files();
+		add_submenu_page(
+			'tainacan-ninja-forms',
+			'View Item', 
+			'View Item', 
+			'manage_options',
+			'tainacan-ninja-forms-config',
+			[$this, "display_config"]
+		);
+	}
+
+	public function display_config() {
+		if ( isset($_REQUEST['id_collection']) ) {
+			update_option('id_collection_relationship_tainacan_adapter', $_REQUEST['id_collection']);
+		}
+		?>
+			<form method="POST">
+				<input type="text" name="id_collection" value="<?php echo get_option('id_collection_relationship_tainacan_adapter', 0); ?>" />
+				<input type="submit" value="Salvar">
+			<form>
+		<?php
+		
 	}
 
 	public function display_view() {
@@ -136,12 +184,12 @@ class Plugin {
 		$tainacanAdapterNF = new Tainacan_Adapter_NF($subListTable->get_columns());
 		?>
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
-				<?php	$tainacanAdapterNF->display_config_collection(); ?>
+				<?php	$tainacanAdapterNF->display_config_collection($form_id); ?>
 				<input class="button" aria-label="" type="submit" value="Aplicar coleção">
 			</form>	
 			<br>	
 			<form method="post" action="?page=tainacan-ninja-forms&tab=mapper&form_id=<?php echo $form_id; ?>">
-				<?php	$tainacanAdapterNF->display(); ?>
+				<?php	$tainacanAdapterNF->display($form_id); ?>
 				<br>
 				<input class="button button-primary" type="submit" value="Salvar mapeamento">
 			</form>
@@ -447,8 +495,8 @@ class Tainacan_Adapter_NF {
 
 	public function NF_2_TNC($id_sub, $form_id, $publish) {
 		$sub = Ninja_Forms()->form( $form_id )->get_sub($id_sub);
-		$mapper = get_option("tainacan_adapter_NF_mapper", []);
-		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection", NULL);
+		$mapper = get_option("tainacan_adapter_NF_mapper-$form_id", []);
+		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection-$form_id", NULL);
 		$errors = [];
 
 		$collections_repository = \Tainacan\Repositories\Collections::get_instance();
@@ -488,7 +536,9 @@ class Tainacan_Adapter_NF {
 						}
 					}
 				}
-
+				if( $field->get_setting( 'type' ) == 'date' ) {
+					$value = date('Y-m-d', strtotime($value));
+				}
 				$metadatum = $metadatum_repository->fetch($metada);
 				$itemMetadada = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
 				$itemMetadada->set_value($value);
@@ -518,11 +568,12 @@ class Tainacan_Adapter_NF {
 		return ["sucess"=>false, "errors"=>$errors];
 	}
 
-	public function display_config_collection() {
+	public function display_config_collection($form_id) {
+
 		if ( isset( $_POST['tnc_collection'] ) ) {
-			update_option("tainacan_adapter_NF_collection", $_POST['tnc_collection']);
+			update_option("tainacan_adapter_NF_collection-$form_id", $_POST['tnc_collection']);
 		}
-		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection", $this->TNC_collection_id);
+		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection-$form_id", $this->TNC_collection_id);
 		$collections_repository = \Tainacan\Repositories\Collections::get_instance();
 		$collections = $collections_repository->fetch([], 'OBJECT');
 		$options='';
@@ -541,12 +592,12 @@ class Tainacan_Adapter_NF {
 		<?php
 	}
 
-	public function display() {
+	public function display($form_id) {
 		if ( isset( $_POST['adapter'] ) ) {
-			update_option("tainacan_adapter_NF_mapper", $_POST['adapter']['mapper']);
+			update_option("tainacan_adapter_NF_mapper-$form_id", $_POST['adapter']['mapper']);
 		}
-		$mapper = get_option("tainacan_adapter_NF_mapper", []);
-		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection", $this->TNC_collection_id);
+		$mapper = get_option("tainacan_adapter_NF_mapper-$form_id", []);
+		$this->TNC_collection_id = get_option("tainacan_adapter_NF_collection-$form_id", $this->TNC_collection_id);
 		if( $this->TNC_collection_id == NULL )
 			return;
 		$metadatum_repository = \Tainacan\Repositories\Metadata::get_instance();
