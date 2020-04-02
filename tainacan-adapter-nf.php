@@ -22,6 +22,7 @@ class Plugin {
 	public function __construct() {
 		add_action("admin_menu", [$this, "add_theme_menu_item"], 20);
 		add_action('admin_enqueue_scripts', [$this, 'get_static_files']);
+		add_action('wp_enqueue_scripts', [$this, 'public_get_static_files']);
 		add_action('wp_ajax_ajax_request', [$this, 'ajax_request'] );
 		$this->load_register_fields();
 	}
@@ -52,6 +53,14 @@ class Plugin {
 		return $fields;
 	}
 
+	function public_get_static_files() {
+		wp_enqueue_script(
+			'ninja-forms-regex',
+			plugins_url('statics/js/ninja-forms-regex.js',__FILE__ ),
+			array('jquery')
+		);
+	}
+
 	function get_static_files() {
 		$main_css = plugins_url('statics/css/main.css',__FILE__ );
 		$main_js = plugins_url('statics/js/ajax.js',__FILE__ );
@@ -64,7 +73,7 @@ class Plugin {
 			$main_js,
 			array('jquery')
 		);
-		
+
 		wp_localize_script(
 			'example-ajax-script',
 			'example_ajax_obj',
