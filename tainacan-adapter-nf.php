@@ -536,7 +536,9 @@ class Tainacan_Adapter_NF {
 						}
 					}
 				}
-
+				if( $field->get_setting( 'type' ) == 'date' ) {
+					$value = date('Y-m-d', strtotime($value));
+				}
 				$metadatum = $metadatum_repository->fetch($metada);
 				$itemMetadada = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
 				$itemMetadada->set_value($value);
