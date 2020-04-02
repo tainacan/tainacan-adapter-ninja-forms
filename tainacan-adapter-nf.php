@@ -528,33 +528,41 @@ class Tainacan_Adapter_NF {
 				//pega o "Label" quando for um "options", pois o "Value" do ninja form não aceita caracteres especiais.
 				$fields_id = $this->get_field_id_by_key($key, $form_id);
 				$field = Ninja_Forms()->form( $form_id )->get_field($fields_id);
-				if( $field->get_setting('options') !==null && is_array($field->get_setting('options')) ) {
-					$options = $field->get_setting('options');
-					foreach($options as $option) {
-						if(is_array($value)) {
-							foreach($value as $idx => $v) {
-								if ($v == $option['value']) {
-									$value[$idx] = $option['label'];
+
+				if ($field->get_setting( 'type' ) == 'file_upload') {
+					$handle_document_erros = $this->handle_document($value, $item);
+					if( !empty( $handle_document_erros )) {
+						$errors[] = $handle_document_erros;
+					}
+				} else {
+					if( $field->get_setting('options') !==null && is_array($field->get_setting('options')) ) {
+						$options = $field->get_setting('options');
+						foreach($options as $option) {
+							if(is_array($value)) {
+								foreach($value as $idx => $v) {
+									if ($v == $option['value']) {
+										$value[$idx] = $option['label'];
+									}
 								}
-							}
-						} else {
-							if ($value == $option['value']) {
-								$value = $option['label'];
-								break;
+							} else {
+								if ($value == $option['value']) {
+									$value = $option['label'];
+									break;
+								}
 							}
 						}
 					}
-				}
-				if( $field->get_setting( 'type' ) == 'date' ) {
-					$value = date('Y-m-d', strtotime($value));
-				}
-				$metadatum = $metadatum_repository->fetch($metada);
-				$itemMetadada = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
-				$itemMetadada->set_value($value);
-				if ($itemMetadada->validate()) {
-					$itemMetadada = $item_metadata_repository->insert($itemMetadada);
-				} else {
-					$errors[] = ["description" => $itemMetadada->get_errors(), "value" => $value] ;
+					if( $field->get_setting( 'type' ) == 'date' ) {
+						$value = date('Y-m-d', strtotime($value));
+					}
+					$metadatum = $metadatum_repository->fetch($metada);
+					$itemMetadada = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
+					$itemMetadada->set_value($value);
+					if ($itemMetadada->validate()) {
+						$itemMetadada = $item_metadata_repository->insert($itemMetadada);
+					} else {
+						$errors[] = ["description" => $itemMetadada->get_errors(), "value" => $value] ;
+					}
 				}
 			}
 		} else {
@@ -575,6 +583,38 @@ class Tainacan_Adapter_NF {
 			$errors[] = $item->get_errors();
 		}
 		return ["sucess"=>false, "errors"=>$errors];
+	}
+
+	private function handle_document($values, $item_inserted) {
+		$errors = [];
+		foreach($values as $key => $value) {
+			$correct_value = trim($value);
+		}
+		
+		if( filter_var($correct_value, FILTER_VALIDATE_URL) ) {
+			$TainacanMedia = \Tainacan\Media::get_instance();
+			$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
+
+			if(!$id) {
+				$errors[] = ["description" => "erro ao criar anexor do arquivo", "value" => $correct_value];
+			}
+
+			$item_inserted->set_document( $id );
+			$item_inserted->set_document_type( 'attachment' );
+			if( $item_inserted->validate() ) {
+				$items_repository = \Tainacan\Repositories\Items::get_instance();
+				//$item_inserted = $items_repository->update($item_inserted);
+				$thumb_id = $items_repository->get_thumbnail_id_from_document($item_inserted);
+				if (!is_null($thumb_id)) {
+					set_post_thumbnail( $item_inserted->get_id(), (int) $thumb_id );
+				}
+			} else {
+				$errors[] = ["description" => $item_inserted->get_errors(), "value" => $correct_value] ;
+			}
+		} else {
+			$errors[] = ["description" => "URL inválida", "value" => $correct_value];
+		}
+		return $errors;
 	}
 
 	public function display_config_collection($form_id) {
@@ -628,6 +668,7 @@ class Tainacan_Adapter_NF {
 						value="<?php echo $value; ?>"
 					>
 						<option value=""> Não mapeado </option>
+						<option value="document"> Documento </option>
 						<?php echo $options; ?>
 					</select>
 				</div>
